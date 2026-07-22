@@ -82,23 +82,26 @@ def readBvh(bvhPath: str) -> BVHData:
 
     with open(bvhPath, "r") as f:
         # read and process the header
-        line = f.readline()
-        while(True):
-            if("MOTION" in line):
+        for line in f:
+            if "MOTION" in line:
                 break
-            header.append(line.strip("\n"))
-            line = f.readline()
+            header.append(line.rstrip("\n"))
 
         # read and process the motion data
-        line = f.readline()
-        while(line != ""):
-            if("Frames:" in line):
+        for line in f:
+            line = line.strip()
+
+            # skip empty lines
+            if not line:
+                continue
+
+            if "Frames:" in line:
                 numFrames = int(line.split()[1])
-            elif("Frame Time:" in line):
+            elif "Frame Time:" in line:
                 frameTime = float(line.split()[2])
             else:
-                motion.append([float(x) for x in line.rstrip().replace("\n", "").split()])
-            line = f.readline()
+                motion.append([float(x) for x in line.split()])
+
     bvhData = _buildBvhStructure(header, motion, numFrames, frameTime)
     return bvhData
 
