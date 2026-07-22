@@ -33,7 +33,7 @@ def _readEndSite(header, currentIndex, jointIndex, parent):
         if("{" in header[currentIndex]):
             currentIndex += 1
         if("OFFSET" in header[currentIndex]):
-            offset = [float(x) for x in header[currentIndex].lstrip().split(" ")[1:]]
+            offset = [float(x) for x in header[currentIndex].lstrip().split()[1:]]
             currentIndex += 1
         if("}" in header[currentIndex]):
             currentIndex += 1
@@ -44,7 +44,7 @@ def _readEndSite(header, currentIndex, jointIndex, parent):
     return endSite, currentIndex, jointIndex
         
 def _readJoint(header, currentIndex, jointIndex, parent=None):
-    jointName = header[currentIndex].lstrip().split(" ")[1]
+    jointName = header[currentIndex].lstrip().split()[1]
     currentIndex += 1
     jointObject = Joint(name = jointName, index=jointIndex, offset=None, channels=[], parent = parent)
     jointIndex += 1
@@ -53,11 +53,11 @@ def _readJoint(header, currentIndex, jointIndex, parent=None):
             currentIndex += 1
         
         if("OFFSET" in header[currentIndex]):
-            jointObject._setOffset([float(x) for x in header[currentIndex].lstrip().rstrip().split(" ")[1:]])
+            jointObject._setOffset([float(x) for x in header[currentIndex].lstrip().rstrip().split()[1:]])
             currentIndex += 1
         
         if("CHANNELS" in header[currentIndex]):
-            jointObject._setChannels([str(x) for x in header[currentIndex].lstrip().rstrip().split(" ")[2:]])
+            jointObject._setChannels([str(x) for x in header[currentIndex].lstrip().rstrip().split()[2:]])
             currentIndex += 1
         
         if("JOINT" in header[currentIndex]):
@@ -93,11 +93,11 @@ def readBvh(bvhPath: str) -> BVHData:
         line = f.readline()
         while(line != ""):
             if("Frames:" in line):
-                numFrames = int(line.split(" ")[1])
+                numFrames = int(line.split()[1])
             elif("Frame Time:" in line):
-                frameTime = float(line.split(" ")[2])
+                frameTime = float(line.split()[2])
             else:
-                motion.append([float(x) for x in line.rstrip().replace("\n", "").split(" ")])
+                motion.append([float(x) for x in line.rstrip().replace("\n", "").split()])
             line = f.readline()
     bvhData = _buildBvhStructure(header, motion, numFrames, frameTime)
     return bvhData

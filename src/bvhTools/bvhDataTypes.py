@@ -442,7 +442,7 @@ class BVHData:
         jointName = ""
         for lineIndex, line in enumerate(self.header):
             if("ROOT" in line or "JOINT" in line): 
-                jointName = line.split(" ")[-1]
+                jointName = line.split()[-1]
             if("End Site" in line):
                 jointName = jointName + "_EndSite"
             
